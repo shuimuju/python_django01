@@ -136,6 +136,35 @@ models.py没有设置主键
 
 ### 多表查询
 
+#### 一对多(ForeignKey):  操作带外键的对象
+
+- 方式一：以对象的形式传递
+
+  ```python
+  def index14(request):
+      publish = Publish.objects.filter(pk=2).first()
+      book = Booking.objects.create(title='天妖剑法', price=500, pub_date='2024-05-01', publish=publish)
+      print(book, type(book))
+      return HttpResponse(book, content_type='text/html;charset=utf-8')
+  ```
+
+- 方式二：以id的形式传递
+
+  ```python
+  def index13(request):
+      publish = Publish.objects.filter(pk=1).first() # pk默认为id
+      pk = publish.pk
+      book = Booking.objects.create(title='冲灵剑法', price=200, pub_date='2024-01-01', publish_id=pk) #publish_id 默认为ForeignKey
+      print(book, type(book))
+      return HttpResponse(book, content_type='text/html;charset=utf-8')
+  ```
+
+#### 多对多(ManytoManyField):在第三张表新增数据
+
+##### 关联管理器(对象调用)
+
+- 多对多(推荐使用，一对多不推荐使用)
+
 ### 单表查询
 
 - 获取所有数据
@@ -170,7 +199,7 @@ models.py没有设置主键
 
 - 查询不符合条件
 
-  `DemoModel.object.exclude(column_name = a)`
+  `DemoModel.object.exclude(column_name = 'a')`
 
 - 获取单个对象
 
