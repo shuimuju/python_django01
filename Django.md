@@ -126,6 +126,13 @@ models.py没有设置主键
 
 # 数据库
 
+## 事务管理
+
+- ```python
+  transaction.atomic():
+      model_object.save()
+  ```
+
 ## MySQL
 
 ## PostgreSQL
@@ -163,7 +170,39 @@ models.py没有设置主键
 
 ##### 关联管理器(对象调用)
 
-- 多对多(推荐使用，一对多不推荐使用)
+- 多对多(推荐使用，一对多：不推荐使用)
+
+- 正向：带ManyToManyField属性的对象，被ManyTomanyField关联的对象为反向
+
+- add添加方式
+
+  - 单个添加
+
+    ```python
+    @transaction.atomic
+    def index15(request):
+        author_one = Author.objects.filter(name='令狐冲').first()
+        author_two = Author.objects.filter(name='任我行').first()
+        books = Booking.objects.get(id=7)
+    	# books.authors.add(author_one, author_two) # 通过对象形式添加
+        books.authors.add(author_one.pk,author_two.pk) # 通过ID形式添加
+        return HttpResponse(books, content_type='text/html;charset=utf-8')
+    ```
+
+  - 批量添加
+
+    ```python
+    @transaction.atomic
+    def index17(request):
+        book = Booking.objects.get(pk=8)
+        list_author = Author.objects.filter(id__gte=2)
+        # book.authors.add(*list_author)  # *+对象的集合(QuerySet)
+        list_id =(item.id for item in list_author)
+        book.authors.add(*list_id) # *+对象id的序列
+        return HttpResponse(book, content_type='text/html;charset=utf-8')
+    ```
+
+    
 
 ### 单表查询
 
