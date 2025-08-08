@@ -186,6 +186,8 @@ models.py没有设置主键
         books = Booking.objects.get(id=7)
     	# books.authors.add(author_one, author_two) # 通过对象形式添加
         books.authors.add(author_one.pk,author_two.pk) # 通过ID形式添加
+        # authors.booking_set.add(book_object_one.pk,book_object_two.pk)
+        # authors.booking_set.add(book_object_one.pk,book_object_two.pk)
         return HttpResponse(books, content_type='text/html;charset=utf-8')
     ```
 
@@ -197,12 +199,92 @@ models.py没有设置主键
         book = Booking.objects.get(pk=8)
         list_author = Author.objects.filter(id__gte=2)
         # book.authors.add(*list_author)  # *+对象的集合(QuerySet)
+        # author.booking_set.add(*list_book) # *+对象的集合(QuerySet)
         list_id =(item.id for item in list_author)
         book.authors.add(*list_id) # *+对象id的序列
+        # list_id =(item.id for item in list_book)
+        # author.booking_set.add(*list_id)
         return HttpResponse(book, content_type='text/html;charset=utf-8')
     ```
 
-    
+- create():
+
+  ```python
+  @transaction.atomic
+  def index19(request):
+      publish = Publish.objects.filter(name='华山出版社').first()
+      author = Author.objects.filter(name='任我行').first()
+      book = author.booking_set.create(title='凌波微步',price=300,pub_date='2001-01-01',publish=publish)
+      return HttpResponse(book,content_type='text/html;charset=utf-8')
+  ```
+
+- remove():从关联对象中，移除指定对象的单一数据，对ForignKey,null=true时存在
+
+  ```python
+  @transaction.atomic()
+  def index20(request):
+      author_object = Author.objects.get(id=1)
+      book_object = Booking.objects.get(id=7)
+      author_object.booking_set.remove(book_object)
+      return HttpResponse("ok")
+  ```
+
+- clear():从关联对象中，移除指定对象关联的所有数据，对ForignKey,null=true时存在
+
+  ```python
+  @transaction.atomic()
+  def index21(request):
+      book_object = Booking.objects.get(id=3)
+      book_object.authors.clear()
+      return HttpResponse("ok")
+  ```
+
+##### 查询：
+
+```python
+def index22(request):
+    '''
+    正向查询:如果是一对多:返回只有一个对象
+    :param request: 
+    :return: 
+    '''
+    book_object = Booking.objects.get(id=6) 
+ 
+    list_authors = book_object.authors.all()
+    '''
+    反向查询
+    '''
+    author_object = Author.objects.get(id=1)
+    list_books = author_object.booking_set.all()
+    return HttpResponse(list_books)
+```
+
+- 一对一没有正反向之分:不需要用_set
+
+  ```python
+   au_detail = models.OneToOneField("AuthorDetail", on_delete=models.CASCADE)
+  ```
+
+- 跨表查询:filter()与values_list()字段名字的写法
+
+  ```python
+  def index23(request):
+      '''
+      正向跨表查询
+      '''
+      # res = Booking.objects.filter(authors__name='任我行').values('title','price')
+      # res = Booking.objects.filter(authors__name='任我行').values_list('title','price')
+      '''
+       反向跨表查询
+      '''
+      # res = Author.objects.filter(name='任我行').values('booking__title','booking__price')
+      res = Author.objects.filter(name='任我行').values_list('booking__title','booking__price')
+      return HttpResponse(res)
+  ```
+
+  
+
+  
 
 ### 单表查询
 
