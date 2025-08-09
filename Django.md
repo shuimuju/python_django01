@@ -137,6 +137,28 @@ models.py没有设置主键
 
 ## PostgreSQL
 
+# 序列化:model对象及QuerySetl类型
+
+## django序列化
+
+- 单个对象
+
+  ```python
+  def index29(request):
+      books = Booking.objects.get(pk=7)
+      data = serializers.serialize('json',[books]) 
+      return HttpResponse(data, content_type='text/html;charset=utf-8'
+  ```
+
+- 多个对象
+
+  ```python
+  def index30(request):
+      books = Booking.objects.all()
+      data = serializers.serialize('json',books)
+      return HttpResponse(data, content_type='text/html;charset=utf-8')
+  ```
+
 # 模型(Models)
 
 ## 查询
@@ -284,7 +306,103 @@ def index22(request):
 
 ##### 聚合查询
 
+```python
+from django.db.models import Avg,Max,Min,Count,Sum  #   引入函数
+```
 
+- 定义别名
+
+  ```python
+  def index24(request):
+      res = Booking.objects.aggregate(Avg("price")) # 默认key的名字为price__avg,返回的是字典对象
+      for k,v,in res.items():
+          print(k,v)
+      for key in res:
+          value = res[key]
+          print(value)
+      for key in res.kes():
+          value = res[key]
+      for value in res.values():
+          print(value)
+      # res = Booking.objects.aggregate(avg = Avg("price")) # 启别名，key的名字为avg
+      return HttpResponse(res['price__avg'],content_type='text/html,charset=utf-8')
+      # return HttpResponse(res["avg"],content_type='text/html,charset=utf-8')
+  ```
+
+  ```python
+  '''
+  多个聚合函数一起使用，id的记录数，price的最大值，price的最小值
+  '''
+  def index25(request):
+      res = Booking.objects.aggregate(c=Count('id'),max =Max('price'),min=Min('price'))
+      # {'c': 8, 'max': Decimal('500.00'), 'min': Decimal('200.00')} <class 'dict'>
+      print(res,type(res))
+      return HttpResponse(res,content_type='text/html,charset=utf-8')
+  ```
+
+- 分组查询
+
+  - values或者values_list 放在annotate前面：values或者values_list是以声明以什么字段分组，annotate执行分组
+
+    ```python
+    def index26(request):
+        '''
+        按title进行分组，in_price给Min起别名
+        :param request:
+        :return:
+        '''
+        res = Booking.objects.values('title').annotate(in_price = Min('price'))
+        return HttpResponse(res,content_type='text/html;charset=utf-8')
+    ```
+
+  - values或者values_list 放在annotate后面：annotate以当前表的pk即id执行分组，values或者values_list表示查询那些字段，并且要将annotate里的聚合函数起别名，在values或values_list里写其别名
+
+    ```python
+    def index27(request):
+        '''
+        统计每本书的作者个数,'c':annotate()的别名
+        :param request:
+        :return:
+        '''
+        res = Booking.objects.annotate(c=Count('authors__name')).values('title','c')
+        return HttpResponse(res,content_type='text/html;charset=utf-8')
+    ```
+
+- 对分组查询结果集进行过滤或排序
+
+  ```python
+  def index28(request):
+      '''
+      对查询结果集QuerySet进行过滤或排序
+      :param request:
+      :return:
+      '''
+      # res = Booking.objects.filter(title__startswith='绝世').annotate(c=Count('authors__name')).values('title','c')
+      # res = Booking.objects.annotate(c=Count('authors__name')).filter(c__gt=0).values('title','c') #过滤条件 'c'大于0
+      res = Booking.objects.annotate(c=Count('authors__name')).order_by('-c').values('title','c') #排序条件，按'c'按降序排序
+      return HttpResponse(res,content_type='text/html;charset=utf-8')
+  ```
+
+  
+
+### F()查询
+
+```python
+from django.db.models import Q,F
+# F('字段名')
+```
+
+Django 支持 F() 对象之间以及 F() 对象和常数之间的加减乘除和取余的操作。
+
+### Q()查询
+
+Q 对象和关键字混合使用，Q 对象要在所有关键字的前面:
+
+```python
+from django.db.models import Q,F
+#Q(条件判断) 操作符：&|~ 
+# Q(condition1 & condition2 | ~condition3)
+```
 
 ### 单表查询
 
@@ -775,6 +893,10 @@ def my_simple_tag(v1, v2, v3):
 
 
 ## 表单
+
+### DjangoForm组件
+
+### Django Auth
 
 ### HTTP请求
 
