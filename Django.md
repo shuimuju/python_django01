@@ -139,6 +139,8 @@ models.py没有设置主键
 
 # Django Auth
 
+## 随机验证
+
 # 序列化:model对象及QuerySetl类型
 
 ## django序列化
