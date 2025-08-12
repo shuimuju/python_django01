@@ -137,10 +137,6 @@ models.py没有设置主键
 
 ## PostgreSQL
 
-# Django Auth
-
-## 随机验证
-
 # 序列化:model对象及QuerySetl类型
 
 ## django序列化
@@ -899,6 +895,8 @@ def my_simple_tag(v1, v2, v3):
 ## 表单
 
 ### DjangoForm组件
+
+### Django Auth
 
 ### HTTP请求
 
