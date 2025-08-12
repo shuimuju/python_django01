@@ -60,7 +60,19 @@ python -m django --version
   ]
   ```
 
-## 创建static目录
+##   在根目录创建static
+
+- html
+
+  ```HTML
+  {% load static %}
+  ```
+
+  ```HTML
+  <img src="{% static 'images/12.png' %}">
+  ```
+
+  
 
 - 放创建css目录，js目录，images目录，plugins目录
 
@@ -1102,5 +1114,29 @@ def search_form(request,query):
       return render(request,'report_app/index.html')
   ```
 
-  
+  # CSRF 防护功能
 
+https://docs.djangoproject.com/zh-hans/4.2/howto/csrf/
+
+## 安装js-cookie
+
+### https://www.jsdelivr.com/package/npm/js-cookie?tab=files&path=dist
+
+##   [`CSRF_USE_SESSIONS`](https://docs.djangoproject.com/zh-hans/4.2/ref/settings/#std-setting-CSRF_USE_SESSIONS) 和 [`CSRF_COOKIE_HTTPONLY`](https://docs.djangoproject.com/zh-hans/4.2/ref/settings/#std-setting-CSRF_COOKIE_HTTPONLY) 为 `False`
+
+- html
+
+  ```js
+     <script src="{% static 'js/js.cookie.min.js' %}"></script>
+  ```
+
+  ```js
+  {#js-cookie 获取csrftoken并返回#}
+  const csrftoken = Cookies.get('csrftoken')
+  fetch(VERIFY_URL,{
+      method:'POST',
+      headers:{
+          'Content-type':'application/json',
+          'X-CSRFToken':csrftoken,
+      },
+  ```
