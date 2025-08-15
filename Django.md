@@ -4,13 +4,16 @@
 
 ## 创建应用
 
-`python manage.py startapp demo01`
+```bash
+python manage.py startapp demo01
+```
 
 ## 模型驱动数据库
 
-`python manage.py makemigrations demo01`
-
-`python manage.py migrate demo01`
+```bash
+python manage.py makemigrations demo01
+python manage.py migrate demo01
+```
 
 ### Model模型：
 
@@ -26,6 +29,68 @@
 ```bash
 python -m django --version
 ```
+
+## 时区设置：setting.py
+
+```python
+# LANGUAGE_CODE = 'en-us'
+
+LANGUAGE_CODE = 'zh-hans'
+
+# TIME_ZONE = 'UTC'
+
+TIME_ZONE = 'Asia/Shanghai'
+
+USE_I18N = True
+
+USE_TZ = True
+
+```
+
+## Session配置
+
+### 引擎为db
+
+#### 定时任务执行Session清理任务
+
+```bash
+ Gunicorn, uWSGI
+```
+
+```bash
+ cron job
+```
+
+
+
+### 开启Session
+
+```bash
+SESSION_ENGINE = 'django.contrib.sessions.backends.db' #数据库
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache' #缓存
+```
+
+### 设置Session过期事件
+
+#### 方式一：setting.py
+
+```bash
+SESSION_COOKIE_AGE = 60*30
+```
+
+#### 方式二：views.py
+
+```python
+
+from django.http import HttpResponse
+from django.utils import timezone
+ 
+def my_view(request):
+    # 设置session在2小时后过期
+    request.session.set_expiry(timezone.now() + timezone.timedelta(hours=2))
+```
+
+
 
 # 文件目录
 

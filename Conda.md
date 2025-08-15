@@ -2,6 +2,12 @@
 
 # 命令
 
+## 取消自动激活环境
+
+```bash
+conda config --set auto_activate_base false
+```
+
 ## 环境目录
 
 ### 目录列表

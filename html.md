@@ -32,3 +32,28 @@
         document.getElementById("captcha-refresh").addEventListener('click',refreshCaptcha)
 ```
 
+# 异步
+
+## fetch
+
+## Ajax
+
+# 时间
+
+## 时间日期转为时间戳
+
+```js
+new Date(date).getTime()
+```
+
+```JS
+# 取整
+Math.floor((new Date(expire_date).getTime()-Date.now())/1000)
+```
+
+# 标签
+
+```html
+<lable></lable>
+```
+
