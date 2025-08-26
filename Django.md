@@ -1,6 +1,19 @@
 # Django
 
+# 版本管理
+
+
+
 # 命令
+
+## 创建项目
+
+```bash
+# `.`表示在当前目录下创建项目
+django-admin startproject myproject .
+# 在myproject-dir目录下创建项目
+django-admin startproject myproject myproject_dir
+```
 
 ## 创建应用
 
@@ -21,6 +34,8 @@ python manage.py migrate demo01
 - 外键：model_id
 
 ## 数据库驱动模型
+
+> 表量小，作为参考
 
 `python manage.py inspectdb > demo1/models.py`
 
@@ -202,6 +217,14 @@ python manage.py runserver 0:8000
 models.py没有设置主键
 
 # 数据库
+
+## SQL Server
+
+```bash
+conda install conda-forge::mssql-django
+```
+
+
 
 ## 事务管理
 
